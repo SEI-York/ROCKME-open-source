@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pending Approval{% endblock %}
+
+
+{% block css %}
+  {{ block.super }}
+  <!-- pager plugin -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/jquery.tablesorter.pager.min.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block header-js %}
+  <script src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/extras/jquery.tablesorter.pager.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row-fluid" id="decart-projects">
+  <br>
+  <h3>Current Projects Pending Submission To The Central Database</h3>
+  <hr>
+  <table id="decart-project-table" class="table table-bordered table-hover decart-table">
+    <thead class="thead-dark">
+      <tr>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Project Leader</th>
+        <th>City</th>
+        <th>Start date</th>
+        <th>End date</th>
+        <th class="option-1">Submit</th>
+        <th class="option-1">Reject</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if projects %}
+        {% for project in projects %}
+          <tr>
+            {% if allow_edit %}
+              <td><a href="{% url 'editproject' project.id %}">{{ project.title }}</a></td>
+            {% else %}
+              <td><a href="{% url 'viewproject' project.id %}">{{ project.title }}</a></td>
+            {% endif %}
+            <td>{{ project.rock.project_type|title }}</td>
+            <td>{{ project.leader_name|default_if_none:"Not Specified" }}</td>
+            <td>{{ project.rock.city|default_if_none:"Not Specified" }}</td>
+            <td>{{ project.start_date|date:"d/m/Y" }}</td>
+            <td>{{ project.end_date|date:"d/m/Y" }}</td>
+            <td class="option-2">
+              <form method="post" class="submit-form">
+                {% csrf_token %}
+                <input type="hidden" name="project-id" value="{{ project.id }}">
+                <input type="hidden" name="action" value="submit">
+                <button class="btn btn-sm btn-success" title="Submit this project" type="submit">
+                  <i class="fas fa-check"></i>
+                </button>
+              </form>
+            </td>
+            <td class="option-2">
+              <form method="post" class="reject-form">
+                {% csrf_token %}
+                <input type="hidden" name="project-id" value="{{ project.id }}">
+                <input type="hidden" name="action" value="reject">
+                <button class="btn btn-sm btn-danger" title="Reject this project" type="submit">
+                  <i class="fas fa-undo"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <td colspan="8">There are currently no projects pending approval.</td>
+      {% endif %}
+    </tbody>
+    {% if projects|length > 10 %}
+      <tfoot>
+        <tr>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Project Leader</th>
+          <th>City</th>
+          <th>Start date</th>
+          <th>End date</th>
+        </tr>
+        <tr>
+          <th colspan="5" class="ts-pager">
+            <div class="form-inline">
+              <div class="btn-group btn-group-sm mx-1" role="group">
+                <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+                <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+              </div>
+              <span class="pagedisplay"></span>
+              <div class="btn-group btn-group-sm mx-1" role="group">
+                <button type="button" class="btn btn-secondary next" title="next">→</button>
+                <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+              </div>
+              <select class="form-control-sm custom-select px-1 pagesize" title="Select page size">
+                <option selected="selected" value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="all">All Rows</option>
+              </select>
+              <select class="form-control-sm custom-select px-4 mx-1 pagenum" title="Select page number"></select>
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+    {% endif %}
+  </table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{# Because tablesorter required that jquery be loaded in the header, we need to #}
+{# nuke the base.html javascript section. This means we also need to add back   #}
+{# in the sidebar fucntion as well... TODO :: Find a better way of doing this!  #}
+<script>
+    // Table sorting
+    $(function() {
+      $("table").tablesorter({
+        theme : "bootstrap",
+
+        widthFixed: true,
+
+        // widget code contained in the jquery.tablesorter.widgets.js file
+        // use the zebra stripe widget if you plan on hiding any rows (filter widget)
+        // the uitheme widget is NOT REQUIRED!
+        widgets : [ "filter", "columns", "zebra" ],
+
+        widgetOptions : {
+          // using the default zebra striping class name, so it actually isn't included in the theme variable above
+          // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+          zebra : ["even", "odd"],
+
+          // class names added to columns when sorted
+          columns: [ "primary", "secondary", "tertiary" ],
+
+          // reset filters button
+          filter_reset : ".reset",
+        }
+      })
+
+      .tablesorterPager({
+        // target the pager markup - see the HTML block below
+        container: $(".ts-pager"),
+        // target the pager page select dropdown - choose a page
+        cssGoto  : ".pagenum",
+        // remove rows from the table to speed up the sort of large tables.
+        // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+        removeRows: false,
+        // output string - default is '{page}/{totalPages}';
+        // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+        output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+      });
+
+    });
+
+    // DELETE a project
+    $('.submit-form').submit(function (event) {
+        var result = confirm("Are you sure you want to submit this project? The data will be publicly uploaded to the central database.");
+        if (!result) {
+          event.preventDefault();
+        }
+    });
+
+    // Reinstate a project
+    $('.reject-form').submit(function (event) {
+        var result = confirm("Are you sure you want to reject this project and make it editable again?");
+        if (!result) {
+          event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
+
+

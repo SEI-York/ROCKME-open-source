@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Index{% endblock %}
+
+
+{% block css %}
+  {{ block.super }}
+  <!-- pager plugin -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/jquery.tablesorter.pager.min.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block header-js %}
+  <script src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/extras/jquery.tablesorter.pager.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1>User List</h1>
+    </div>
+    <br>
+
+    <table id="table-user-list" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Organisation</th>
+          <th>Department</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in rock_users %}
+          <tr>
+            {% if user_is_admin %}
+              <td><a href="{% url 'edit_user' user.id %}">{{ user.display_name }}</a></td>
+            {% else %}
+              <td><a href="{% url 'view_user' user.id %}">{{ user.display_name }}</a></td>
+            {% endif %}
+            <td>{{ user.organisation }}</td>
+            <td>{{ user.department }}</td>
+            <td>{{ user.role }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+        {% if rock_users|length > 10 %}
+          <tfoot>
+            <tr>
+              <th>Name</th>
+              <th>Organisation</th>
+              <th>Department</th>
+              <th>Role</th>
+            </tr>
+            <tr>
+              <th colspan="4" class="ts-pager">
+                <div class="form-inline">
+                  <div class="btn-group btn-group-sm mx-1" role="group">
+                    <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+                    <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+                  </div>
+                  <span class="pagedisplay"></span>
+                  <div class="btn-group btn-group-sm mx-1" role="group">
+                    <button type="button" class="btn btn-secondary next" title="next">→</button>
+                    <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </tfoot>
+        {% endif %}
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+{# Because tablesorter required that jquery be loaded in the header, we need to #}
+{# nuke the base.html javascript section. This means we also need to add back   #}
+{# in the sidebar fucntion as well... TODO :: Find a better way of doing this!  #}
+<script>
+    // Table sorting
+    $(function() {
+      $("table").tablesorter({
+        theme : "bootstrap",
+
+        widthFixed: true,
+
+        // widget code contained in the jquery.tablesorter.widgets.js file
+        // use the zebra stripe widget if you plan on hiding any rows (filter widget)
+        // the uitheme widget is NOT REQUIRED!
+        widgets : [ "filter", "columns", "zebra" ],
+
+        widgetOptions : {
+          // using the default zebra striping class name, so it actually isn't included in the theme variable above
+          // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+          zebra : ["even", "odd"],
+
+          // class names added to columns when sorted
+          columns: [ "primary", "secondary", "tertiary" ],
+
+          // reset filters button
+          filter_reset : ".reset",
+        }
+      }).tablesorterPager({
+        //page size
+        size: 10,
+        savePages: false,
+        // target the pager markup - see the HTML block below
+        container: $(".ts-pager"),
+        // target the pager page select dropdown - choose a page
+        cssGoto  : ".pagenum",
+        // remove rows from the table to speed up the sort of large tables.
+        // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+        removeRows: false,
+        // output string - default is '{page}/{totalPages}';
+        // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+        output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+      });
+
+    });
+</script>
+{% endblock %}

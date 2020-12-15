@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="{% static 'css/login.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-12">
+    <p class="form-title">Sign In to ROCK.ME</p>
+    <form method="post" class="login">
+      {% csrf_token %}
+      {{ form.username }}
+      {{ form.password }}
+      <input type="submit" value="Sign In" class="btn btn-success btn-sm" />
+      <p class="password_reset">
+        Forgot your password? <a href="{% url 'account_reset_password' %}">Reset it.</a> <br/>
+        Do not have an account? <a href="{% url 'account_signup' %}">Register</a>.
+      </p>
+    </form>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+{% comment %}
+A quick hack to get some placeholder text without having to subclass
+the login form in Python.
+{% endcomment %}
+<script>
+  $(document).ready(function() {
+      $('form').find("input[type=text]").attr("placeholder", "email");
+      $('form').find("input[type=password]").attr("placeholder", "password");
+  });
+</script>
+{% endblock %}
+

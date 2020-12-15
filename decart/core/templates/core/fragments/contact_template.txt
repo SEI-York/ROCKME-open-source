@@ -1,0 +1,20 @@
+{% comment %}
+This is a template for rendering a support email from a user.
+At present all emails are being directed to the core DeCart gitlab support
+desk but this is configurable within `core`.
+
+TODO :: See about locating this with the project templates directory in
+        order to allow for the `core` DeCart views to access site wide config
+        without having to edit the templates in `core`.
+{% endcomment %}
+
+Name: {{ name }}
+
+Email: {{ email }}
+
+Nature of issue: {{ nature }}
+
+URL: {{ url }}
+
+Details
+{{ details|safe|striptags }}

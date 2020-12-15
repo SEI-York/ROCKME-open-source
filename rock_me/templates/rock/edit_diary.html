@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Diary - {{ project.title }}{% endblock %}
+
+
+{% block sidebar %}
+  {% include 'rock/fragments/edit_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<div class="container-fluid">
+  <div>
+    <h2>
+      Diary Entries for {{ project.title }}
+      <button class="float-right btn btn-lg btn-primary" data-toggle="collapse" href="#new-entry" aria-expanded="true" aria-controls="new-entry">
+        Add Entry
+      </button>
+    </h2>
+  </div>
+
+  <br>
+
+  {# Formset non-form errors #}
+  {% if link_formset.non_form_errors %}
+    {% for error in link_formset.non_form_errors %}
+      {{ error|escape }}
+    {% endfor %}
+  {% endif %}
+
+  <div class="card border-dark">
+    <div class="card-body collapse" id="new-entry">
+      <form method="post">
+      {% csrf_token %}
+        <p class="card-text"><span class="text-muted">
+            When writing your diary entry you should consider details such as:<br>
+            <ul class="text-muted">
+              <li>Who was involved?</li>
+              <li>What was the location?</li>
+              <li>What impact has this had on the project?</li>
+              <li>Are there links to relevant media?</li>
+            </ul>
+        </span></p>
+
+
+        <div id='management-form'>{{ link_formset.management_form }}</div>
+
+        <table class="table table-bordered decart-table">
+          <tbody>
+            <tr>
+              <th>Category</th>
+              <td>{{ form.category }}</td>
+            </tr>
+            <tr>
+              <th>Entry</th>
+              <td>{{ form.content }}</td>
+            </tr>
+            <tr>
+              <th>Start Date</th>
+              <td>{{ form.start_date }}</td>
+            </tr>
+            <tr>
+              <th>End Date</th>
+              <td>{{ form.end_date }}</td>
+            </tr>
+            <tr>
+              <th>Outcome</th>
+              <td>{{ form.outcome }}</td>
+            </tr>
+            <tr>
+              <th>
+                External Links
+                <p>
+                  <button class="btn btn-primary add-link" type="button" data-table-id="link_table">
+                    Add a link
+                  </button>
+                </p>
+              </th>
+              <td>
+                <table class="table" id="link_table">
+                  <tbody>
+                    {% for link in link_formset %}
+                      {{ link.id }}
+                      {{ link.DELETE.as_hidden }}
+                      <tr>
+                        <td>{{ link.url }}</td>
+                        <td class="option-1">
+                          <button class="btn btn-danger btn-sm btn-delete-link" title="Remove" type="button">
+                            <i class="far fa-trash-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      {% if link.url.errors %}
+                        {% for error in link.url.errors %}
+                          {{ error|escape }}
+                        {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <br>
+
+        <div class="float-right">
+          <input type="submit" class="btn btn-success" value="Save">
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="d-flex justify-content-center">
+    <div class="btn-group btn-group-lg" data-toggle="buttons">
+      <label class="btn btn-outline-primary active">
+        <input id="toggle-note" class="category-toggle" type="checkbox" checked autocomplete="off"> Note
+      </label>
+      <label class="btn btn-outline-secondary active">
+        <input id="toggle-publicevent" class="category-toggle" type="checkbox" checked autocomplete="off"> Public Event
+      </label>
+      <label class="btn btn-outline-info active">
+        <input id="toggle-mediacoverage" class="category-toggle" type="checkbox" checked autocomplete="off"> Media Coverage
+      </label>
+      <label class="btn btn-outline-warning active">
+        <input id="toggle-publication" class="category-toggle" type="checkbox" checked autocomplete="off"> Publication
+      </label>
+      <label class="btn btn-outline-danger active">
+        <input id="toggle-meeting" class="category-toggle" type="checkbox" checked autocomplete="off"> Meeting
+      </label>
+      <label class="btn btn-outline-success active">
+        <input id="toggle-datacollection" class="category-toggle" type="checkbox" checked autocomplete="off"> Data Collection
+      </label>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div class="jumbotron">
+    {% for entry in existing_entries %}
+      <div class="card border-dark category-{{ entry.category|cut:" "|lower }}">
+        <div class="card-body">
+          <h4 class="card-title">
+            {% if entry.end_date is not None %}
+              {{ entry.start_date|date:"d/m/Y" }} - {{ entry.end_date|date:"d/m/Y" }}
+            {% else %}
+              {{ entry.start_date|date:"d/m/Y" }}
+            {% endif %}
+            <div class="float-right">
+              {% if entry.category == "Note" %}
+                <span class="badge badge-primary">Note</span>
+              {% elif entry.category == "Public Event"%}
+                <span class="badge badge-secondary">Public Event</span>
+              {% elif entry.category == "Media Coverage"%}
+                <span class="badge badge-info">Media Coverage</span>
+              {% elif entry.category == "Publication"%}
+                <span class="badge badge-warning">Publication</span>
+              {% elif entry.category == "Meeting"%}
+                <span class="badge badge-danger">Meeting</span>
+              {% elif entry.category == "Data Collection"%}
+                <span class="badge badge-success">Data Collection</span>
+              {% endif %}
+              <form method="post" action="{% url 'deletediaryentry' entry.pk %}" class='entry-delete-form d-inline'>
+                {% csrf_token %}
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-success edit-entry" id="edit-{{ entry.pk }}" type="button">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button type="submit" class="btn btn-danger delete-entry" id="delete-{{ entry.pk }}">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </h4>
+          <hr>
+
+          {{ entry.content|linebreaks }}
+
+          {{ form.external_links }}
+
+          <br><br>
+
+          <div class="card-footer">
+            {% if entry.outcome %}
+              <b>Associated Outcome:</b>
+              <br>
+              <ul style="list-style-type:none">
+                <li><a href="{% url 'editprogress' project_id %}">{{ entry.outcome }}</a></li>
+              </ul>
+            {% endif %}
+
+            <b>External Links:</b>
+            <ul style="list-style-type:none">
+              {% for link in entry.external_links.all %}
+                <li><a href="{{ link.url }}">{{ link.url }}</a></li>
+              {% empty %}
+                <li><i>No external links</i></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {# Tagging the break as well to maintain spacing as entries get hidden #}
+      <br class="category-{{ entry.category|cut:" "|lower }}">
+
+    {% empty %}
+      <div class="card border-dark">
+        <div class="card-body">
+          <h4 class="card-title">
+            No Diary Entries yet
+          </h4>
+          <hr>
+        </div>
+      </div>
+
+      <br>
+      
+    {% endfor %}
+  </div>  <!-- Card Deck -->
+</div>
+
+
+{% endblock %}
+
+{% block modal %}
+<!-- modal form for edit diary -->
+<div class="modal fade in" id="diary-modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Edit diary</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row-fluid">
+          <form method="post" id="diary-edit-form">
+            {% csrf_token %}
+            <div id='edit-management-form'>{{ edit_link_formset.management_form }}</div>
+            <table class="table table-bordered decart-table">
+              <tbody>
+                <tr>
+                  <th>Category</th>
+                  <td>{{ edit_form.category }}</td>
+                </tr>
+                <tr>
+                  <th>Entry</th>
+                  <td>{{ edit_form.content }}</td>
+                </tr>
+                <tr>
+                  <th>Start Date</th>
+                  <td>{{ edit_form.start_date }}</td>
+                </tr>
+                <tr>
+                  <th>End Date</th>
+                  <td>{{ edit_form.end_date }}</td>
+                </tr>
+                <tr>
+                  <th>Outcome</th>
+                  <td>{{ edit_form.outcome }}</td>
+                </tr>
+                <tr>
+                  <th>
+                    External Links
+                    <p>
+                      <button class="btn btn-primary add-link" type="button" data-table-id="edit_link_table">
+                        Add a link
+                      </button>
+                    </p>
+                  </th>
+                  <td>
+                    <table class="table" id="edit_link_table">
+                      <tbody>
+                        {% for link in edit_link_formset %}
+                          {{ link.id }}
+                          {{ link.DELETE.as_hidden }}
+                          <tr>
+                            <td>{{ link.url }}</td>
+                            <td class="option-1">
+                              <button class="btn btn-danger btn-sm btn-delete-link" title="Remove" type="button">
+                                <i class="far fa-trash-alt"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          {% if link.url.errors %}
+                            {% for error in link.url.errors %}
+                              {{ error|escape }}
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
+              <br>
+      
+              <div class="float-right">
+                <input type="submit" class="btn btn-success" value="Save">
+              </div>
+      
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+  {{ block.super }}
+  <script>
+    var URLS = {
+        // AJAX handlers
+        editEntry: "{% url 'editdiaryentry' 0 %}",
+        deleteEntry: "{% url 'deletediaryentry' 0 %}",
+    };
+
+
+    /*
+     * Add a new form to the link formset and update the management form accordingly
+     */
+    function add_record(table_id) {
+        var html = '<tr>'
+        +'<td><input type="url" name="__name__" maxlength="255" id="id___name__"></td>'
+        +'<td class="option-1">'
+        +'  <button class="btn btn-danger btn-sm btn-delete-link" title="Remove" type="button">'
+        +'    <i class="far fa-trash-alt"></i>'
+        +'  </button>'
+        +'</td>'
+        +'</tr>';
+        var new_name='';
+        if ($('#'+table_id+' input[type="url"]:last').length > 0){
+          var old_form_idx = parseInt($('#'+table_id+' input[type="url"]:last').attr('name').match(/\d+/)[0]);
+          var re = new RegExp('-'+old_form_idx+'-', 'g');
+          var new_form_idx = old_form_idx+1;
+          new_name =  $('#'+table_id+' input[type="url"]:last').attr('name').replace(re, '-'+new_form_idx+'-');
+        }else{
+          if(table_id.includes('edit')){
+            new_name = 'edit-0-url';
+          }else{
+            new_name = 'form-0-url';
+          }
+        }
+        var tmp_html = html.replace(/__name__/g, new_name);
+        $('#'+table_id+' tbody').append(tmp_html);
+
+        //update management form
+        if(table_id.includes('edit')){
+            $('#id_edit-TOTAL_FORMS').val($('#'+table_id+' input[type="url"]').length);
+          }else{
+            $('#id_form-TOTAL_FORMS').val($('#'+table_id+' input[type="url"]').length);
+          }
+    }
+
+
+    /*
+     * Delete a link. We need to update the management form correctly to undo
+     * additions made for records that are yet to be saved and mark those for
+     * deletion that were added on page load.
+     */
+    function delete_record(tr) {
+        var result = confirm("Are you sure to delete this link?");
+        if (result) {
+          $(tr).remove();
+        }
+    }
+
+    // -----------------------------------------------------------------------------
+    /*
+     * Actions on page load completion.
+     */
+    $(document).ready(function () {
+        // Set up the CSRF token details for use with AJAX requests
+        setCSRFHeader();
+
+        //bind handler
+        $('#wrapper').on('click', '.btn-delete-link', function() {
+            var tr = $(this).closest('tr');
+            delete_record(tr);
+        });
+
+        $('.edit-entry').click(function () {
+            var entryId = $(this).attr('id').split('-')[1];
+            var url = URLS.editEntry.replace(/0$/, entryId);
+
+            $.get(url, "", function (data) {
+                if (data['success']) {
+                  //reset form
+                  $('#diary-edit-form').trigger("reset");
+                  $('#edit_link_table tbody').empty();
+                  //add one row for link
+                  $('#diary-edit-form .add-link').click();
+
+                  //update form URL
+                  $('#diary-edit-form').attr('action', url);
+
+                  //populate data
+                  $('#diary-edit-form textarea[name="edit-content"]').val(data['data']['content']);
+                  $('#diary-edit-form input[name="edit-start_date"]').val(data['data']['start_date']);
+                  $('#diary-edit-form input[name="edit-end_date"]').val(data['data']['end_date']);
+                  $('#diary-edit-form select[name="edit-outcome"]').val(data['data']['outcome']).trigger('change');
+                  $('#diary-edit-form select[name="edit-category"]').val(data['data']['category']).trigger('change');
+
+                  //populate link data
+                  for (var i = 0; i < data['data']['external_links'].length; i++) {
+                    var name = 'edit-'+i+'-url';
+                    $('#diary-edit-form input[name="'+name+'"]').val(data['data']['external_links'][i]);
+                    //add more rows
+                    $('#diary-edit-form .add-link').click();
+                }
+                  
+
+                  $('#diary-modal').modal('show');
+                } else {
+                    window.scrollTo(0, 0);
+                    setDecartAlertDiv('danger', 'Unable to get funding details.');
+                }
+            }, "json").fail(function() { decartServerError() });
+        });
+
+
+        $('.entry-delete-form').submit(function (event) {
+            var result = confirm("Are you sure you want to remove this diary entry?");
+            if (!result) {
+                event.preventDefault();
+            }
+        });
+
+        $('.add-link').click(function() { 
+          var table_id = $(this).data('table-id');
+          add_record(table_id);
+        });
+
+        /*
+         * Toggle the visibility of a diary category.
+         */
+        $('.category-toggle').change(function(event ) {
+            var category = $(this).attr('id').split('-')[1].toLowerCase();
+            if ($(this).prop('checked')){
+              $('.category-' + category).show();
+            }else{
+              $('.category-' + category).hide();
+            }
+        });
+
+    });
+  </script>
+{% endblock %}

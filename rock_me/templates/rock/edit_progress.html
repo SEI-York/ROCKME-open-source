@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Progress - {{ project.title }}{% endblock %}
+
+
+{% block sidebar %}
+  {% include 'rock/fragments/edit_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current action: {{ project.title }}</b></h4>
+<p><b>What changes can be observed in the project outcomes?</b></p>
+<br>
+
+<div class="row-fluid">
+  {% for partner in partners %}
+  <div class="card">
+    <div class="card-body">
+      <h4 class="cardf-title">Project Audience: {{ partner.name }}</h4>
+      {% for outcome in partner.outcomes %}
+        <p><b>Outcome:</b> {{ outcome.description }}</p>
+
+        {% for indicator in outcome.indicator_list %}
+          <table class="table table-bordered decart-table" id="indicator-{{ indicator.pk }}">
+            <thead class="thead-dark">
+              <tr>
+                <th class="option-2">
+                  <button class="btn btn-primary add-state" title="Add a new state" type="button" id="add-state-{{ indicator.pk }}" data-toggle="modal" data-target="#state-modal">
+                    Add State
+                  </button>
+                </th>
+                <th>{{ indicator.kpi.name }}{% if indicator.kpi.name == 'Other' %} - {{indicator.name}}{% endif %}</th>
+                <th class="date">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td class="option-2">Baseline</td>
+                  <td>{{ indicator.baseline }}</td>
+                  <td>{{ indicator.baseline_date|date:"d/m/Y" }}</td>
+                </tr>
+              {% for state in indicator.states.all %}
+                <tr id="state-{{ indicator.pk }}-{{ state.pk }}">
+                  <td class="option-2">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button class="btn edit-state btn-success" title="Edit" type="button">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn delete-state btn-danger" title="Delete" type="button">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>{{ state.state }}</td>
+                  <td>{{ state.start_date|date:"d/m/Y" }}{% if state.end_date %} - {{state.end_date|date:"d/m/Y"}}{% endif %}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% empty %}
+          <div class="list-group">
+            <a href="{% url 'editmonitoring' project_id %}" class="list-group-item list-group-item-warning">
+              There are no progress indicators specified for this outcome.  You can add one on the "M&amp;E Plan" page.
+            </a>
+          </div>
+        {% endfor %}
+        <br>
+      {% empty  %}
+        <div class="list-group">
+          <a href="{% url 'editmonitoring' project_id %}" class="list-group-item list-group-item-warning">
+            There are no outcomes specified for this Project Audience.  You can add one on the "M&amp;E Plan" page.
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  {% empty  %}
+    <div class="list-group">
+      <a href="{% url 'editmonitoring' project_id %}" class="list-group-item list-group-item-warning">
+        There are no Project Audiences specified for this project. You can add one on the "M&amp;E Plan" page.
+      </a>
+    </div>
+    <br>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block modal %}
+<!-- Add a new state form -->
+<div class="modal fade" id="state-modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row-fluid">
+          <form id="state-form" action="" method="post">
+            {% csrf_token %}
+            {{ state_form.external_links.as_hidden }}
+            <div id='management-form'>{{ link_formset.management_form }}</div>
+
+            <table id="state-table" class="table table-bordered decart-table">
+              <tbody>
+                  <div class="fieldWrapper">
+                    <tr>
+                      <th>{{ state_form.state.label_tag }}</th>
+                      <td>{{ state_form.state }}</td>
+                    </tr>
+                  </div>
+
+                  <div class="fieldWrapper">
+                    <tr>
+                      <th>{{ state_form.start_date.label_tag }}</th>
+                      <td>{{ state_form.start_date }}</td>
+                    </tr>
+                  </div>
+
+                  <div class="fieldWrapper">
+                    <tr>
+                      <th>{{ state_form.end_date.label_tag }}</th>
+                      <td>{{ state_form.end_date }}</td>
+                    </tr>
+                  </div>
+
+                  <div class="fieldWrapper">
+                    <tr>
+                      <th>{{ state_form.evidence.label_tag }}</th>
+                      <td>{{ state_form.evidence }}</td>
+                    </tr>
+                  </div>
+
+                  <div class="fieldWrapper">
+                    <tr>
+                      <th>
+                        External Links
+                        <p><button class="btn btn-primary" id="add_link" type="button">Add a link</button></p>
+                      </th>
+                      <td>
+                        <table class="table" id="link_table">
+                          <tbody>
+                            {% for link in link_formset %}
+                              <tr>
+                                <td>{{ link.url }}</td>
+                                <td class="option-1">
+                                  <button class="btn btn-danger btn-sm btn-delete" title="Remove" type="button">
+                                    <i class="far fa-trash-alt"></i>
+                                  </button>
+                                </td>
+                              </tr>
+                              {% if link.url.errors %}
+                                {% for error in link.url.errors %}
+                                  {{ error|escape }}
+                                {% endfor %}
+                              {% endif %}
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </div>
+
+
+              </tbody>
+            </table>
+            <div class="modal-footer">
+              <input type="submit" class='btn btn-success' value="Save"/>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{# Used by the JavaScript to stash information for modals #}
+<div id="modal-placeholder"></div>
+
+{# Placeholder for JS to add more forms #}
+<div id="empty_link_form" style="display:none">
+  <table class="table table-bordered table-striped">
+    <tbody>
+      <tr>
+        <td>{{ link_formset.empty_form.url }}</td>
+        <td class="button" class="option-1">
+          <button class="btn btn-danger btn-sm btn-delete" title="Remove" type="button">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+      {% if link_formset.empty_form.url.errors %}
+        {% for error in link_formset.empty_form.url.errors %}
+          {{ error|escape }}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+{{ block.super }}
+
+<script>
+    {# These are used by progress.js #}
+    var URLS = {
+
+        // AJAX handlers
+        addState: "{% url 'addstate' 0 %}",    // 0 is replaced with the indicator_id in js
+        editState: "{% url 'editstate' 0 %}",  // 0 is replaced with the indicator_id in js
+        deleteState: "{% url 'deletestate' %}",
+    }
+</script>
+
+<script src="{% static 'js/rock/projects/progress.js' %}"></script>
+{% endblock %}

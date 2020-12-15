@@ -1,0 +1,25 @@
+{% load rocktags %}
+{% load static %}
+{% comment %}
+This sidebar should be used for any of the pages that are related to
+viewing a project and its related details. It provides navigation bound
+within the read only project pages for the given project.
+{% endcomment %}
+
+<li class="sidebar-heading">READ ONLY</li>
+<div class="customHr">.</div>
+<li class="sidebar-heading">Overview</li>
+<li class="sidebar-item"><a href="{% url 'viewproject' project_id %}">Project Details</a></li>
+<li class="sidebar-heading">Design &amp; Planning</li>
+<li class="sidebar-item"><a href="{% url 'viewmonitoring' project_id %}">M&E Plan</a></li>
+<li class="sidebar-heading">Monitoring</li>
+<li class="sidebar-item"><a href="{% url 'viewdiary' project_id %}">Diary</a></li>
+<li class="sidebar-item"><a href="{% url 'viewprogress' project_id %}">KPI Progress</a></li>
+<li class="sidebar-heading">Evaluation</li>
+<li class="sidebar-item"><a href="{% url 'viewevaluation' project_id %}">Final Evaluation</a></li>
+<li class="sidebar-heading">Help</li>
+<li class="sidebar-item">
+    <a 
+    href="/media/documents/wiki_help.pdf{% if help_page_number %}#page={{ help_page_number }}{% endif %}" 
+    target="_blank">Instructions</a>
+</li>

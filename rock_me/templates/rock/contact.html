@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Contact Support{% endblock %}
+
+{% block content %}
+<H2>Contact Support</H2>
+<br>
+
+<div class="container">
+  <div class="row">
+    {% csrf_token %}
+    {% crispy form %}
+  </div>
+</div>
+{% endblock %}

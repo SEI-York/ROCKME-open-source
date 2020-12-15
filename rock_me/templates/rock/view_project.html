@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Project - {{ project.title }}{% endblock %}
+
+
+{% block sidebar %}
+  {% include 'rock/fragments/view_sidebar.html' %}
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    #project-partners tbody tr td:nth-child(1),
+    #project-partners tbody tr td:nth-child(5),
+    #project-partners tbody tr td:nth-child(6),
+    #project-partners tbody tr td:nth-child(7),
+    #project-partners tbody tr td:nth-child(8),
+    #project-partners tbody tr td:nth-child(9) {
+      word-break: break-word;
+    }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current {{ rock.project_type|title }}: {{ project.title }}</b></h4>
+<p><b>Description of the action</b></p>
+<br>
+
+<div class="row-fluid" id="project">
+  <nav> <!-- Tabbed navigation through the Project page -->
+    <div class="nav nav-fill nav-pills" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-details-tab" data-toggle="tab" href="#nav-details" role="tab">Project Details</a>
+      <a class="nav-item nav-link" id="nav-partners-tab" data-toggle="tab" href="#nav-partners" role="tab">Organisations</a>
+      <a class="nav-item nav-link" id="nav-funding-tab" data-toggle="tab" href="#nav-funding" role="tab">Funding Mechanisms</a>
+      <a class="nav-item nav-link" id="nav-business-tab" data-toggle="tab" href="#nav-business" role="tab">Business Model</a>
+    </div>
+  </nav>
+  <br>
+
+  <div class="tab-content" id="nav-tabContent">
+
+    <div class="tab-pane fade show active" id="nav-details" role="tabpanel">
+      <table id="project-details" class="table table-bordered table-view-only decart-table">
+        <tbody>
+          <tr>
+            <th>Title</th>
+            <td>{{ project.title }}</td>
+          </tr>
+          <tr>
+            <th>Summary</th>
+            <td>{{ project.summary|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Goal</th>
+            <td>{{ project.goal|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Start Date</th>
+            <td>{{ project.start_date|date:"d/m/Y" }}</td>
+          </tr>
+          <tr>
+            <th>End Date</th>
+            <td>{{ project.end_date|date:"d/m/Y" }}</td>
+          </tr>
+            {% if rock.project_type == "Task" %}
+              <tr>
+                <th>Work Package</th>
+                <td>{{ rock.work_package }}</td>
+              </tr>
+              <tr>
+                <th>Associated work packages</th>
+                <td>{{ rock.associated_wps }}</td>
+              </tr>
+            {% endif %}
+          <tr>
+            <th>City</th>
+            <td>{{ rock.city }}</td>
+          </tr>
+          <tr>
+            <th>Lead Administrative Organisation</th>
+            <td>{{ rock.lead_administrative_organisation }}</td>
+          </tr>
+          <tr>
+            <th>Lead Scientific Organisation</th>
+            <td>{{ rock.lead_scientific_organisation }}</td>
+          </tr>
+          <tr>
+            <th>Contact person(s)</th>
+            <td>{{ rock.contact_person }}</td>
+          </tr>
+          <tr>
+            <th>Total budget</th>
+            <td>{{ rock.budget_currency }} {{ rock.budget_amount }}</td>
+          </tr>
+          <tr>
+            <th>Note</th>
+            <td>{{ project.note|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>External Links</th>
+            <td>
+              <ul style="list-style-type:none">
+                {% for link in project.external_links.all %}
+                  <li><a href="{{ link.url }}">{{ link.url }}</a></li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-partners" role="tabpanel">
+      <table id="project-partners" class="table table-bordered decart-table">
+        <thead class="thead-dark">
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Scale</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Website</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Other Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for partner in partners %}
+            <tr id={{ partner.pk }}>
+              <td>{{ partner.name|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.role }}</td>
+              <td>{{ partner.scale|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.get_organisation_type_display|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.location|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.website|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.phone|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.email|default_if_none:"&nbsp;" }}</td>
+              <td>{{ partner.other_info|default_if_none:"&nbsp;" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-funding" role="tabpanel">
+      <table id="project-funding" class="table table-bordered decart-table">
+        <thead class="thead-dark">
+          <tr>
+            <th>Mechanism</th>
+            <th>Provider</th>
+            <th>Type Of Provider Ownership</th>
+            <th>Type Of Provider</th>
+            <th>Amount</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mech in funding_mechanisms %}
+          <tr id={{ mech.pk }}>
+            {% if mech.mechanism == "Other" %}
+              <td>{{ mech.other_details }}</td>
+            {% else %}
+              <td>{{ mech.mechanism }}</td>
+            {% endif %}
+            <td>{{ mech.provider }}</td>
+            <td>{{ mech.provider_ownership }}</td>
+            <td>{{ mech.provider_type }}</td>
+            <td>{{ mech.currency }} {{ mech.amount }}</td>
+            <td>{{ mech.note }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-business" role="tabpanel">
+      <table id="project-business" class="table table-bordered decart-table">
+        <tr>
+          <th>Partners</th>
+          <td>{{ b_model.partners|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Activities</th>
+          <td>{{ b_model.activities|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Resources</th>
+          <td>{{ b_model.resources|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Value Proposition</th>
+          <td>{{ b_model.value_proposition|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Project Audiences Relationship</th>
+          <td>{{ b_model.customer_relationship|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Channels</th>
+          <td>{{ b_model.channels|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Project Audiences Segments</th>
+          <td>
+            <div>Project Audiences and Customers:
+              <ul>
+                {% for audience in audiences %}
+                  <li>{{ audience }}</li>
+                {% empty %}
+                  <li>Sorry, no beneficiaries in this project.</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {{ b_model.customer_segments|linebreaks|default_if_none:"&nbsp;" }}
+          </td>
+        </tr>
+        <tr>
+          <th>Costs</th>
+          <td>{{ b_model.costs|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+        <tr>
+          <th>Revenues</th>
+          <td>{{ b_model.revenues|linebreaks|default_if_none:"&nbsp;" }}</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

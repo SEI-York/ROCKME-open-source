@@ -1,0 +1,204 @@
+{% load static i18n rocktags %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}decart{% endblock title %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    <!-- Latest compiled and minified Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    <link href="{% static 'css/simple-sidebar.css' %}" rel="stylesheet">
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
+
+    {% comment %}
+    Some javascript needs to be in the header for it to work correctly.
+    NOTE :: Most JS files should be included in the `javascript`
+            block to reduce page loads!
+    {% endcomment %}
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <!-- Required by Bootstrap v4 -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/b1ea747723.js" crossorigin="anonymous"></script>
+
+    <!--Third-party javascript libraries go here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+    
+    {% block header-js %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- NOTE :: Everything in the body needs to be inside this wrapper div in order for the sidebar animation to work -->
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+            <img src="{% static 'images/logo-inverted.png' %}" alt="ROCK" style="height: 35px;">
+          </li>
+          {% comment %}
+          The sidebar content should be dynamically set according to the page that we are currently on.
+          In general, it is used for navigation within logical sections of the site but it can also be
+          used for quick page controls (i.e search / filtering) as well.
+          {% endcomment %}
+          {% block sidebar %}
+            {% include 'rock/fragments/minimal_sidebar.html' %}
+          {% endblock %}
+        </ul>
+      </div> <!-- /#sidebar-wrapper -->
+
+
+      <!-- Page Content -->
+      <div id="page-content-wrapper">
+
+        <!-- Nav bar -->
+        <div class="m-b-5">
+          <nav class="navbar navbar-expand-md navbar-light bg-faded">
+          <!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark"> -->
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <a class="navbar-brand" href="#menu-toggle" id="menu-toggle">
+              <img src="{% static 'images/logo.png' %}" alt="DeCart" style="height: 19px;">
+            </a>
+
+            {# Only show the toolbar if the user is logged in #}
+            {% if request.user.is_authenticated %}
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Left hand options -->
+                <ul class="navbar-nav mr-auto">
+                  {% if rock_user.is_non_guest_user %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'newproject' %}">{% trans "New" %}</a>
+                    </li>
+                  {% endif %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'myindex' %}">{% trans "My Projects" %}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">{% trans "All Projects" %}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'orgindex' %}">{% trans "Organisations" %}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userindex' %}">{% trans "Users" %}</a>
+                  </li>
+                  {% comment %}
+                  {% if rock_user.has_admin_rights %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'reports' %}">{% trans "Reports" %}</a>
+                    </li>
+                  {% endif %}
+                  {% endcomment %}
+                </ul>
+
+                <!-- Right hand options -->
+                <ul class="navbar-nav">
+                  {% if rock_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stats' %}">{% trans "ROCKME stats" %}</a>
+                    </li>
+                    {% pending_deletion_count as deletion_count %}
+                    <li class="nav-item">
+                      {% if deletion_count > 0 %}
+                        <a class="nav-link" href="{% url 'pendingdeletion' %}">{% trans "Pending Deletion" %}<span class="badge badge-danger badge-pill tr-badge">{{ deletion_count }}</span></a>
+                      {% else %}
+                        <a class="nav-link" href="{% url 'pendingdeletion' %}">{% trans "Pending Deletion" %}</a>
+                      {% endif %}
+                    </li>
+                  {% endif %}
+
+                  {% comment %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">{% trans "Contact Support" %}</a>
+                  </li>
+                  {% endcomment %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="/media/documents/wiki_help.pdf" target="_blank">{% trans "Help" %}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">{% trans "Sign Out" %}</a>
+                  </li>
+                </ul>
+
+              </div>
+            {% endif %}
+          </nav>
+        </div>
+
+        <div class="container-fluid">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <!-- Placeholder div for errors thrown by ajax methods -->
+          <div id="ajax-errors"></div>
+
+          {% block content %}
+            <p>Welcome to DeCart! You need to overwrite the "content" block in your template</p>
+            <p>in order to set your own content in this page.</p>
+          {% endblock content %}
+
+          <hr>
+          <footer class="rock-footer">
+            {# TODO :: This should be a block that is set elsewhere. #}
+            <p>&copy; ROCK (Regeneration and Optimisation of Cultural heritage in creative and Knowledge cities)</p>
+          </footer>
+
+        </div> <!-- /container-fluid -->
+
+        {% block modal %}{% endblock modal %}
+
+      </div> <!-- /#page-content-wrapper -->
+    </div> <!-- /#wrapper -->
+    <footer class="footer fixed-bottom eu-banner">
+      <div class="container">
+        <span class="text-muted small">
+          This project has received funding from the 
+          European Union’s Horizon 2020 research and innovation programme 
+          under grant agreement No 730280.
+        </span>
+        <img src="{% static 'images/eu-flag.png' %}" alt="EU flag"/>
+      </div>
+    </footer>
+
+    <!-- place project specific Javascript in this file -->
+    <script src="{% static 'js/project.js' %}"></script>
+    <!-- Sidebar toggle function and Select2 select boxes by default-->
+    <script>
+      $("#menu-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled");
+      });
+
+      $("select:not(#id_kpi)").select2({
+          width: "98%"
+      });
+    </script>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    {% block javascript %}
+    {% endblock javascript %}
+  </body>
+</html>

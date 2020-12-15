@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organisations{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <!-- pager plugin -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/jquery.tablesorter.pager.min.css" rel="stylesheet">
+  <style>
+    table tbody tr td:nth-child(1),
+    table tbody tr td:nth-child(4),
+    table tbody tr td:nth-child(5),
+    table tbody tr td:nth-child(7) {
+      word-break: break-word;
+    }
+  </style>
+{% endblock %}
+
+
+{% block header-js %}
+  <script src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/extras/jquery.tablesorter.pager.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1>
+        ROCK Organisations
+        <button type="button" class="btn btn-primary float-right create-org">
+          Create A New Organisation
+        </button>
+      </h1>
+
+      <br>
+
+      <div class="list-group">
+        <span class="list-group-item list-group-item-info">
+          Here you can find the details for all of the organisations currently
+          known about within ROCKME.
+          Before creating a new organisation, please ensure that you have
+          checked here to see if it is listed under a different name.
+        </span>
+      </div>
+    </div>
+
+    <br>
+
+    <table id="table-org-list" class="table table-bordered" id="org-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Scale</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Website</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th data-sorter="false" class="filter-false"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for organisation in organisations %}
+          <tr data-id="{{ organisation.id }}">
+            <td>{{ organisation.name }}</td>
+            <td>{{ organisation.get_scale_display  }}</td>
+            <td>{{ organisation.get_organisation_type_display }}</td>
+            <td>{{ organisation.location }}</td>
+            <td>
+              {% if not organisation.website == None %}
+                <a href="{{ organisation.website }}">{{ organisation.website }}</a>
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td>{{ organisation.phone }}</td>
+            <td>{{ organisation.email }}</td>
+            <td>
+              <div class="btn-group">
+                {% if perms.core.can_change_organisation %}
+                  <button class="btn btn-sm btn-primary edit-org" type="button" >Edit</button>
+                {% endif %}
+                {% comment %}
+                  <a class="btn btn-sm btn-primary" href="{% url 'view_org' project.id %}">View</a>
+                {% endcomment %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- Create Partner Form -->
+{{ org_modal }}
+
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    var URLS = {
+        // AJAX handlers
+        newOrg: "{% url 'neworg' %}",
+        editOrg: "{% url 'editorg' 0 %}",
+    };
+
+    $("table").tablesorter({
+        theme : "bootstrap",
+        widthFixed: true,
+        widgets : [ "filter", "zebra" ],
+
+        widgetOptions : {
+            zebra : ["even", "odd"],
+            filter_reset : ".reset",
+        }
+    });
+  </script>
+  <script src="{% static 'js/rock/projects/org_index.js' %}"></script>
+{% endblock %}
+

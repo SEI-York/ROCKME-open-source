@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block css%}
+  {{ block.super }}
+  <style>
+    th {
+        width: 250px;
+    }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+<H2>View User</H2>
+
+<br>
+
+<div class="jumbotron">
+  <div class="col-md-12">
+    <table class="table table-bordered">
+      <tbody>
+        <tr><th>First Name: </th><td>{{ requested_user.first_name }}</td></tr>
+        <tr><th>Last Name: </th><td>{{ requested_user.last_name }}</td></tr>
+        <tr><th>Department: </th><td>{{ requested_user.department }}</td></tr>
+        <tr><th>Organisation: </th><td>{{ requested_user.organisation }}</td></tr>
+        <tr><th>Role: </th><td>{{ requested_user.role }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

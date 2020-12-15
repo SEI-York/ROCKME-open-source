@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Editing {{ project.title }}{% endblock %}
+
+
+{% block sidebar %}
+  {% include 'rock/fragments/view_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<div class="container-fluid">
+  <div>
+    <h2>Diary Entries for {{ project.title }}</h2>
+  </div>
+
+  <br>
+
+  <div class="d-flex justify-content-center">
+    <div class="btn-group btn-group-lg" data-toggle="buttons">
+      <label class="btn btn-outline-primary active">
+        <input id="toggle-note" class="category-toggle" type="checkbox" checked autocomplete="off"> Note
+      </label>
+      <label class="btn btn-outline-secondary active">
+        <input id="toggle-publicevent" class="category-toggle" type="checkbox" checked autocomplete="off"> Public Event
+      </label>
+      <label class="btn btn-outline-info active">
+        <input id="toggle-mediacoverage" class="category-toggle" type="checkbox" checked autocomplete="off"> Media Coverage
+      </label>
+      <label class="btn btn-outline-warning active">
+        <input id="toggle-publication" class="category-toggle" type="checkbox" checked autocomplete="off"> Publication
+      </label>
+      <label class="btn btn-outline-danger active">
+        <input id="toggle-meeting" class="category-toggle" type="checkbox" checked autocomplete="off"> Meeting
+      </label>
+      <label class="btn btn-outline-success active">
+        <input id="toggle-datacollection" class="category-toggle" type="checkbox" checked autocomplete="off"> Data Collection
+      </label>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div class="jumbotron">
+    {% for entry in existing_entries %}
+      <div class="card border-dark category-{{ entry.category|cut:" "|lower }}">
+        <div class="card-body">
+          <h4 class="card-title">
+            {% if entry.end_date is not None %}
+              {{ entry.start_date|date:"d/m/Y" }} - {{ entry.end_date|date:"d/m/Y" }}
+            {% else %}
+              {{ entry.start_date|date:"d/m/Y" }}
+            {% endif %}
+            {% if entry.category == "Note" %}
+              <span class="float-right badge badge-primary">Note</span>
+            {% elif entry.category == "Public Event"%}
+              <span class="float-right badge badge-secondary">Public Event</span>
+            {% elif entry.category == "Media Coverage"%}
+              <span class="float-right badge badge-info">Media Coverage</span>
+            {% elif entry.category == "Publication"%}
+              <span class="float-right badge badge-warning">Publication</span>
+            {% elif entry.category == "Meeting"%}
+              <span class="float-right badge badge-danger">Meeting</span>
+            {% elif entry.category == "Data Collection"%}
+              <span class="float-right badge badge-success">Data Collection</span>
+            {% endif %}
+          </h4>
+          <hr>
+
+          {{ entry.content|linebreaks }}
+
+          {{ form.external_links }}
+
+          <br><br>
+
+          <div class="card-footer">
+            {% if entry.outcome %}
+              <b>Associated Outcome -</b> {{ entry.outcome }}
+            {% endif %}
+
+            <ul style="list-style-type:none">
+              {% for link in entry.external_links.all %}
+                <li><a href="{{ link.url }}">{{ link.url }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {# Tagging the break as well to maintain spacing as entries get hidden #}
+      <br class="category-{{ entry.category|cut:" "|lower }}">
+
+    {% empty %}
+      <div class="card border-dark">
+        <div class="card-body">
+          <h4 class="card-title">
+            No Diary Entries yet
+          </h4>
+          <hr>
+        </div>
+      </div>
+
+      <br>
+      
+    {% endfor %}
+  </div>  <!-- Card Deck -->
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+  {{ block.super }}
+  <script>
+    // -----------------------------------------------------------------------------
+    /*
+     * Actions on page load completion.
+     */
+    $(document).ready(function () {
+        /*
+         * Toggle the visibility of a diary category.
+         */
+         $('.category-toggle').change(function(event ) {
+            var category = $(this).attr('id').split('-')[1].toLowerCase();
+            if ($(this).prop('checked')){
+              $('.category-' + category).show();
+            }else{
+              $('.category-' + category).hide();
+            }
+        });
+    });
+  </script>
+{% endblock %}

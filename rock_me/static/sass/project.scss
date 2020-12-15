@@ -1,0 +1,238 @@
+/*!
+ * Main ROCK - DeCart CSS
+ */
+@import "colors";
+
+@mixin inverted-colors {
+  color: $fg-light;
+  background: $bg-dark;
+}
+
+@mixin input_width {
+  // By default, Django forms in tables only seem to use 50% width...
+  width: 99% !important;
+  resize: vertical !important;
+}
+
+// ---------------------------------------------------------------------------
+// Animations
+.rotated-image {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+// ---------------------------------------------------------------------------
+// Cusom bootstrap colorings
+.bg-dark {
+  background: $bg-dark !important;
+}
+
+.bg-secondary {
+  background: $fg-dark;
+}
+
+.bg-light {
+  background: $fg-light;
+}
+
+.bg-danger {
+  background: $danger;
+}
+
+.fg-dark {
+  color: $bg-dark;
+}
+
+.fg-secondary {
+  color: $fg-dark;
+}
+
+.fg-light {
+  color: $fg-light;
+}
+
+.fg-danger {
+  color: $danger;
+}
+
+.btn-decart-light {
+  filter: invert(1);
+  color: $fg-light;
+  background-color: #d3bfb8;
+  border-color: #d3bfb8;
+  // background-color: $bg-dark;
+  // border-color: $bg-dark;
+}
+
+// Alert styles
+.alert-debug {
+  background-color: $white;
+  border-color: $mint-green;
+  color: $black;
+}
+
+.alert-error {
+  background-color: $pink;
+  border-color: $dark-pink;
+  color: $red;
+}
+
+// ---------------------------------------------------------------------------
+// Navigation
+.nav-item.nav-link {
+  color: $fg-dark;
+  background-color: white;
+}
+
+.nav-link.active {
+  color: $fg-light !important;
+  background-color: $bg-dark !important;
+}
+
+// ---------------------------------------------------------------------------
+// Table styles
+.decart-table {
+  tbody {
+    th {
+      @include inverted-colors;
+      width: 15%;
+    }
+  }
+
+  td textarea,
+  input:not(#id_budget_amount):not([type=checkbox]):not([type=radio]) {
+    @include input_width
+  }
+
+  #id_budget_currency {
+    width: 15%;
+  }
+
+  #id_budget_amount {
+    width: 84% !important;
+  }
+
+  .field-disclosure {
+    float: right;
+    padding: 0 1%;
+  }
+}
+
+.thead-dark {
+  @include inverted-colors;
+}
+
+.table-bullet {
+  display: list-item;
+  list-style: disc inside;
+  padding: -1 -1 -1 13px;
+  margin: -1;
+}
+
+.tablesorter-pager .btn-group-sm .btn {
+  font-size: 1.2em;
+  /* make pager arrows more visible */
+}
+
+// ---------------------------------------------------------------------------
+// Modal styles
+.modal .modal-dialog {
+  width: 80% !important;
+  max-width: 800px;
+  margin: auto;
+
+  td textarea,
+  input {
+    @include input_width
+  }
+
+  th {
+    @include inverted-colors;
+    width: 15%;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Accordian Styles
+// .partner-name {
+//     color: $fg-dark;
+// }
+
+// Badge styles
+.tr-badge {
+  z-index: 1;
+  position: relative;
+  top: -7px;
+  right: -1px;
+}
+
+.decart-table {
+
+  th,
+  td {
+    &.option-1 {
+      text-align: center;
+      width: 56px;
+    }
+
+    &.option-2 {
+      text-align: center;
+      width: 88px;
+    }
+  }
+
+  th.date {
+    width: 205px;
+  }
+}
+
+#link_table td.option-1 {
+  width: 56px;
+}
+
+button.kpi-cat {
+  opacity: 0.6;
+
+  &:not(.selected) {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+  }
+
+  &.selected {
+    opacity: 1;
+  }
+
+  &.kpi-cat-L:not(.selected) {
+    display: none;
+  }
+}
+
+select {
+  width: 98%;
+}
+
+footer.rock-footer{
+  margin-bottom: 75px;
+}
+
+
+footer.eu-banner {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #dde2eb;
+
+  &>div {
+    text-align: center;
+
+    img {
+      height: 40px;
+      margin-left: 40px;
+    }
+  }
+}

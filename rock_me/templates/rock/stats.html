@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ROCKME stats{% endblock %}
+
+{% block css %}
+{{ block.super }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+    <div class="col">
+        <h1>ROCKME stats</h1>
+        <p>Data generated on {% now "d/m/Y" %}.</p>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">City</th>
+                    <th scope="col">Project Type</th>
+                    <th scope="col">Number of Projects</th>
+                    <th scope="col">Has Business Model?</th>
+                    <th scope="col">Has Funding Mechanisms?</th>
+                    <th scope="col">Has KPI?</th>
+                    <th scope="col">Has MRE?</th>
+                    <th scope="col">Has Stakeholders?</th>
+                    <th scope="col">Has Final Evaluation?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td>{{ row.0 }}</td>
+                    <td>{{ row.1 }}</td>
+                    <td>{{ row.2 }}</td>
+                    <td>{{ row.3 }}</td>
+                    <td>{{ row.4 }}</td>
+                    <td>{{ row.5 }}</td>
+                    <td>{{ row.6 }}</td>
+                    <td>{{ row.7 }}</td>
+                    <td>{{ row.8 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+
+<script>
+    $(document).ready(function () {});
+</script>
+{% endblock %}

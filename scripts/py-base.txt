@@ -1,0 +1,31 @@
+# Wheel for binary deps
+wheel==0.35.1
+
+django==3.0.10
+requests==2.23.0
+argon2==0.1.10
+argon2_cffi==20.1.0
+
+# Forms
+django-crispy-forms==1.9.2
+
+# Static file caching
+whitenoise==5.2.0
+
+# Python-Postgres Database Adapter
+psycopg2-binary==2.8.6
+
+# Time zones support
+pytz==2020.1
+
+# environ
+django-environ==0.4.5
+
+# registration
+django-allauth
+
+# db url
+dj_database_url==0.5.0
+
+# Data manipulation
+# https://github.com/tarkatronic/django-excel-response

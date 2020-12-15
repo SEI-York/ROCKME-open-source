@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block css%}
+  {{ block.super }}
+  <style>
+    th {
+        width: 250px;
+    }
+
+    input[type=text] {
+        width: 100% !important;
+    }
+
+    select {
+        width: 100px !important;
+    }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+<H2>Edit User</H2>
+
+<br>
+
+<div class="jumbotron">
+  <div class="col-md-12">
+    <form method="post">
+      {% csrf_token %}
+      {{ user_form.non_field_errors }}
+      {{ user_form.user.as_hidden }}
+      {{ user_form.help_text_language.as_hidden }}
+
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <th>First Name: </th>
+            <td>
+              {{ user_form.first_name }}
+              {{ user_form.first_name.errors }}
+            </td>
+          </tr>
+          <tr>
+            <th>Last Name: </th>
+            <td>
+              {{ user_form.last_name }}
+              {{ user_form.last_name.errors }}
+            </td>
+          </tr>
+          <tr>
+            <th>Department: </th>
+            <td>
+              {{ user_form.department }}
+              {{ user_form.department.errors }}
+            </td>
+          </tr>
+          <tr>
+            <th>Organisation: </th>
+            <td>
+              {{ user_form.organisation }}
+              {{ user_form.organisation.errors }}
+            </td>
+          </tr>
+          <tr>
+            <th>Role: </th>
+            <td>
+              {{ user_form.role }}
+              {{ user_form.role.errors }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <input type="submit" class="btn btn-success float-right" value="Save"/>
+    </form>
+  </div>
+</div>
+{% endblock %}

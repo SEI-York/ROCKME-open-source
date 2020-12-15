@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Progress - {{ project.title }}{% endblock %}
+
+
+{% block sidebar %}
+  {% include 'rock/fragments/view_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current action: {{ project.title }}</b></h4>
+<p><b>What changes can be observed in the project outcomes?</b></p>
+<br>
+
+<div class="row-fluid">
+  {% for partner in partners %}
+  <div class="card">
+    <div class="card-body">
+      <h4 class="cardf-title">Project Audience: {{ partner.name }}</h4>
+      {% for outcome in partner.outcomes %}
+        <p><b>Outcome:</b> {{ outcome.description }}</p>
+
+        {% for indicator in outcome.indicator_list %}
+          <table class="table table-bordered decart-table" id="indicator-{{ indicator.pk }}">
+            <thead class="thead-dark">
+              <tr>
+                <th class="option-2"></th>
+                <th>{{ indicator.kpi.name }}{% if indicator.kpi.name == 'Other' %} - {{indicator.name}}{% endif %}</th>
+                <th class="date">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td class="option-2">Baseline</td>
+                  <td>{{ indicator.baseline }}</td>
+                  <td>{{ indicator.baseline_date|date:"d/m/Y" }}</td>
+                </tr>
+              {% for state in indicator.states.all %}
+                <tr id="state-{{ indicator.pk }}-{{ state.pk }}">
+                  <td class="option-2"></td>
+                  <td>{{ state.state }}</td>
+                  <td>{{ state.start_date|date:"d/m/Y" }}{% if state.end_date %} - {{state.end_date|date:"d/m/Y"}}{% endif %}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% empty %}
+          <div class="list-group">
+            <span class="list-group-item list-group-item-warning">
+              There are no progress indicators specified for this outcome.
+            </span>
+          </div>
+        {% endfor %}
+        <br>
+      {% empty  %}
+        <div class="list-group">
+          <span class="list-group-item list-group-item-warning">
+            There are no outcomes specified for this Project Audience.
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  {% empty  %}
+    <div class="list-group">
+      <span class="list-group-item list-group-item-warning">
+        There are no Project Audiences specified for this project.
+      </span>
+    </div>
+    <br>
+  {% endfor %}
+</div>
+{% endblock %}

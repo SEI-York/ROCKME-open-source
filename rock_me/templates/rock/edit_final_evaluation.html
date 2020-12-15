@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Final Evaluation - {{ project_title }}{% endblock %}
+
+
+{% block sidebar %}
+{% include 'rock/fragments/edit_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current action: {{ project.title }}</b></h4>
+<p><b>Final Evaluation</b></p>
+<br>
+
+<div class="row-fluid" id="project">
+  <nav>
+    <!-- Tabbed navigation through the Final Evaluation form -->
+    <div class="nav nav-fill nav-pills" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-summary-tab" data-toggle="tab" href="#nav-summary"
+        role="tab">Summary</a>
+      <a class="nav-item nav-link" id="nav-outcomes-tab" data-toggle="tab" href="#nav-outcomes" role="tab">Outcomes</a>
+      <a class="nav-item nav-link" id="nav-finance-tab" data-toggle="tab" href="#nav-finance" role="tab">Finance & Time
+        Management</a>
+      <a class="nav-item nav-link" id="nav-reflection-tab" data-toggle="tab" href="#nav-reflection"
+        role="tab">Reflections</a>
+    </div>
+  </nav>
+
+  <!-- Tabbed content controlled by the nav above -->
+  <form action="{% url 'editevaluation' project_id %}" method="post">
+    {% csrf_token %}
+
+    <div class="tab-content" id="nav-tabContent">
+
+      <div class="tab-pane fade show active" id="nav-summary" role="tabpanel">
+        <table id="evaluation-summary-details" class="table table-bordered table-view-only decart-table">
+          <tbody>
+            <tr>
+              <th>Summary of key findings</th>
+              <td>
+                {{ form.summary }}
+              </td>
+            </tr>
+            <tr>
+              <th>Goal</th>
+              <td>{{ project.goal|linebreaks }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-pane fade" id="nav-outcomes" role="tabpanel">
+        <table id="evaluation-outcome-details" class="table table-bordered table-view-only decart-table">
+          <tbody>
+            <tr>
+              <th>Outcomes to date</th>
+              <td>
+                {{ form.outcomes }}
+              </td>
+            </tr>
+            <tr>
+              <th>Unexpected changes in project partners or project audiences</th>
+              <td>
+                {{ form.unexpected_changes }}
+              </td>
+            </tr>
+            <tr>
+              <th>Anticipated changes in the future</th>
+              <td>
+                {{ form.future_changes }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-pane fade" id="nav-finance" role="tabpanel">
+        <table id="evaluation-finance-time-details" class="table table-bordered table-view-only decart-table">
+          <tbody>
+            <tr>
+              <th>The project was:</th>
+              <td>{{ form.budget_status }}</td>
+            </tr>
+            <tr>
+              <th>Comments</th>
+              <td>
+                {{ form.budget_comments }}
+                <div class="field-disclosure">
+                  {{ form.budget_comments_disclosure.label_tag }}
+                  {{ form.budget_comments_disclosure }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>The project was delivered:</th>
+              <td>{{ form.time_status }}</td>
+            </tr>
+            <tr>
+              <th>Comments</th>
+              <td>
+                {{ form.time_comments }}
+                <div class="field-disclosure">
+                  {{ form.time_comments_disclosure.label_tag }}
+                  {{ form.time_comments_disclosure }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-pane fade" id="nav-reflection" role="tabpanel">
+        <table id="evaluation-reflection-details" class="table table-bordered table-view-only decart-table">
+          <tbody>
+            <tr>
+              <th>Organization and cooperation</th>
+              <td>
+                {{ form.team_cooperation }}
+                <div class="field-disclosure">
+                  {{ form.team_cooperation_disclosure.label_tag }}
+                  {{ form.team_cooperation_disclosure }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Partner contributions</th>
+              <td>
+                {{ form.partner_contribution }}
+                <div class="field-disclosure">
+                  {{ form.partner_contribution_disclosure.label_tag }}
+                  {{ form.partner_contribution_disclosure }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Communication</th>
+              <td>
+                {{ form.communication }}
+                <div class="field-disclosure">
+                  {{ form.communication_disclosure.label_tag }}
+                  {{ form.communication_disclosure }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Recommendations to ROCK leadership</th>
+              <td>
+                {{ form.management_recommendations }}
+                <div class="field-disclosure">
+                  {{ form.management_recommendations_disclosure.label_tag }}
+                  {{ form.management_recommendations_disclosure }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Tips for other projects</th>
+              <td>
+                {{ form.tips }}
+                <div class="field-disclosure">
+                  {{ form.tips_disclosure.label_tag }}
+                  {{ form.tips_disclosure }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div> <!-- nav-tabContent -->
+    <input type="submit" class="btn btn-success save-page" value="Save" />
+  </form>
+</div>
+{% endblock %}

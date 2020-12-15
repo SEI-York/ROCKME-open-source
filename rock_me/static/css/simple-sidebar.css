@@ -1,0 +1,141 @@
+/*!
+ * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
+ */
+body {
+  overflow-x: hidden;
+}
+
+#wrapper {
+  padding-left: 215px;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+  padding-left: 0;
+}
+
+#sidebar-wrapper {
+  z-index: 1000;
+  position: fixed;
+  left: 215px;
+  width: 215px;
+  height: 100%;
+  margin-left: -215px;
+  overflow-y: auto;
+  background: #2c4047;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  width: 0;
+}
+
+#page-content-wrapper {
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+  margin-right: -215px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+  position: absolute;
+}
+
+/* Sidebar Styles */
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 215px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav li a {
+  display: block;
+  text-decoration: none;
+  color: #a3b6c5;
+}
+
+.sidebar-nav li a:hover {
+  text-decoration: none;
+  color: #e8e8e8;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav li a:active, .sidebar-nav li a:focus {
+  text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+  height: 65px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #e8e8e8;
+  line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-heading {
+  font-size: 14px;
+  font-weight: bold;
+  color: #e8e8e8;
+}
+
+.sidebar-nav > .sidebar-brand a {
+  color: #e31a2d;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+  color: #e31a2d;
+  background: none;
+}
+
+@media (min-width: 768px) {
+  #wrapper {
+    padding-left: 215px;
+  }
+  #wrapper.toggled {
+    padding-left: 0;
+  }
+  #sidebar-wrapper {
+    width: 215px;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    width: 0;
+  }
+  #wrapper.toggled #page-content-wrapper {
+    padding: 20px;
+    position: relative;
+    margin-right: 0;
+  }
+  #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
+  }
+}
+
+.customHr {
+  width: 95%;
+  font-size: 1px;
+  color: #e8e8e8;
+  line-height: 1px;
+  background-color: grey;
+  margin-top: -2px;
+  margin-bottom: 6px;
+}

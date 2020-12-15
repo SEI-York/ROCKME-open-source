@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Final Evaluation - {{ project_title }}{% endblock %}
+
+{% block sidebar %}
+  {% include 'rock/fragments/view_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current action: {{ project.title }}</b></h4>
+<br>
+
+<div class="row-fluid" id="project">
+  <nav> <!-- Tabbed navigation through the Final Evaluation -->
+    <div class="nav nav-fill nav-pills" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-summary-tab" data-toggle="tab" href="#nav-summary" role="tab">Summary</a>
+      <a class="nav-item nav-link" id="nav-outcomes-tab" data-toggle="tab" href="#nav-outcomes" role="tab">Outcomes</a>
+      <a class="nav-item nav-link" id="nav-finance-tab" data-toggle="tab" href="#nav-finance" role="tab">Finance & Time Management</a>
+      <a class="nav-item nav-link" id="nav-reflection-tab" data-toggle="tab" href="#nav-reflection" role="tab">Reflections</a>
+    </div>
+  </nav>
+
+  <!-- Tabbed content controlled by the nav above -->
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-summary" role="tabpanel">
+      <table id="evaluation-summary-details" class="table table-bordered table-view-only decart-table">
+        <tbody>
+          <tr>
+            <th>Summary of key findings</th>
+            <td>{{ evaluation.summary|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Goal</th>
+            <td>{{ project.goal|linebreaks }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-outcomes" role="tabpanel">
+      <table id="evaluation-outcome-details" class="table table-bordered table-view-only decart-table">
+        <tbody>
+          <tr>
+            <th>Outcomes to date</th>
+            <td>{{ evaluation.outcomes|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Unexpected changes in project partners or project audiences</th>
+            <td>{{ evaluation.unexpected_changes|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Anticipated changes in the future</th>
+            <td>{{ evaluation.future_changes|linebreaks }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-finance" role="tabpanel">
+      <table id="evaluation-finance-time-details" class="table table-bordered table-view-only decart-table">
+        <tbody>
+          <tr>
+            <th>{{ evaluation.budget_status }}</th>
+            <td>{{ evaluation.budget_comments|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>{{ evaluation.time_status }}</th>
+            <td>{{ evaluation.time_comments|linebreaks }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane fade" id="nav-reflection" role="tabpanel">
+      <table id="evaluation-reflection-details" class="table table-bordered table-view-only decart-table">
+        <tbody>
+          <tr>
+            <th>Organization and cooperation</th>
+            <td>{{ evaluation.team_cooperation|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Partner contributions</th>
+            <td>{{ evaluation.partner_contribution|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Communication</th>
+            <td>{{ evaluation.communication|linebreaks }}</td>
+          </tr>
+          <tr>
+            <th>Recommendations to ROCK leadership</th>
+            <td>{{ evaluation.management_recommendations }}</td>
+          </tr>
+          <tr>
+            <th>Tips for other projects</th>
+            <td>{{ evaluation.tips|linebreaks }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> <!-- nav-tabContent -->
+</div>
+{% endblock %}

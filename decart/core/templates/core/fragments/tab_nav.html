@@ -1,0 +1,44 @@
+{% comment %}
+A fragment for creating a tabbed navigation interface.
+
+Required Context:
+  - style : tabs / pills
+  - nav_id: string
+  - content_id: string
+  - fade: bool
+  - sections : list of dicts
+    -> {
+      title: string,
+      id: string,
+      content: HTML
+    }
+{% endcomment %}
+
+<nav> <!-- Tabbed navigation -->
+  <div class="nav nav-fill nav-{{ style }}" id="nav-{{ nav_id }}" role="tablist">
+    {% for section in sections %}
+      {% if forloop.first %}
+        {# Mark the first tab as active #}
+        <a class="nav-item nav-link active" id="{{ section.id }}-tab" data-toggle="tab" href="#nav-{{ section.id }}" role="tab">{{ sections.title }}</a>
+      {% else %}
+        <a class="nav-item nav-link" id="{{ section.id }}-tab" data-toggle="tab" href="#nav-{{ section.id }}" role="tab">{{ sections.title }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</nav>
+<br>
+
+<div class="tab-content" id="nav-{{ content_id }}">
+  {% for section in sections %}
+    {% if fade %}
+      <div class="tab-pane fade show active" id="nav-{{ section.id }}" role="tabpanel">
+    {% else %}
+      <div class="tab-pane show active" id="nav-{{ section.id }}" role="tabpanel">
+    {% endif %}
+      {% autoescape off %}
+        {{ section.content }}
+      {% endautoescape %}
+    </div>
+  {% endfor %}
+</div>
+

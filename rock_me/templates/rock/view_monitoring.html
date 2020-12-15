@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}M&amp;E Plan - {{ project.title }}{% endblock %}
+
+{% block sidebar %}
+  {% include 'rock/fragments/view_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h4><b>Current action: {{ project.title }}</b></h4>
+<p><b>Project partners, audiences &amp; outcomes</b></p>
+<br>
+
+<h3>Outcomes and Indicators</h3>
+<br>
+
+{% if partners|length == 0 %}
+  <div class="list-group">
+    <span class="list-group-item list-group-item-warning">There are no Project partners/audiences specified for this project</span>
+  </div>
+{% endif %}
+
+<div class="row-fluid" id="main-body">
+  <div id="accordion" role="tablist">
+    {% for partner in partners %}
+      <div class="card">
+        <div class="card-header text-info bg-dark" role="tab" id="heading-{{ forloop.counter }}">
+          <h3 class="mb-0">
+            <a class="text-info" data-toggle="collapse" href="#collapse-{{ forloop.counter }}">
+              {{ partner.name }}
+            </a>
+          </h3>
+        </div>
+
+        {% if forloop.first %}
+          {# Only the first Partner should be open to begin with #}
+          <div id="collapse-{{ forloop.counter }}" class="collapse show" role="tabpanel">
+        {% else %}
+          <div id="collapse-{{ forloop.counter }}" class="collapse" role="tabpanel">
+        {% endif %}
+          <div class="card-body">
+            <div id="accordion" role="tablist">
+              {% for outcome in partner.outcomes %}
+                <h4>
+                  <a class="text-info" data-toggle="collapse" href="#collapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                    Outcome {{ forloop.counter }} - {{ outcome.description }}
+                  </a>
+                </h4>
+
+                {% if forloop.first %}
+                  {# Only the first Outcome should be open to begin with #}
+                  <div id="collapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="collapse show" role="tabpanel">
+                {% else %}
+                  <div id="collapse-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="collapse" role="tabpanel">
+                {% endif %}
+                <br/><br/>
+                {% if outcome.indicator_list|length > 0 %}
+                  <table class="table table-bordered decart-table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>Indicator</th>
+                        <th>Measure</th>
+                        <th>Means of Verification</th>
+                        <th>Baseline State</th>
+                        <th>Date of Baseline</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for indicator in outcome.indicator_list %}
+                        <tr>
+                          <td>{{ indicator.kpi.name }}{% if indicator.kpi.name == 'Other' %} - {{indicator.name}}{% endif %}</td>
+                          <td>{{ indicator.measure }}</td>
+                          <td>{{ indicator.verification }}</td>
+                          <td>{{ indicator.baseline }}</td>
+                          <td>{{ indicator.baseline_date|date:"d/m/Y" }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% else %}
+                  <div class="list-group">
+                    <span class="list-group-item list-group-item-warning">There are no progress indicators specified for this outcome</span>
+                  </div>
+                {% endif %}
+                </div>
+              {% empty %}
+                <div class="list-group">
+                  <span class="list-group-item list-group-item-warning">There are no outcomes specified for this Project Audience</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <br>
+  <h3>Progress Markers</h3>
+  <br>
+
+  {% if markers|length == 0 %}
+    <div class="list-group">
+      <span class="list-group-item list-group-item-warning">There are no progress markers specified for this project</span>
+    </div>
+  {% else %}
+    <table id="progress-markers" class="table table-bordered table-view-only decart-table">
+      <thead class="thead-dark">
+        <tr>
+          <th>Outcome Progress Marker</th>
+          <th>Project Audience</th>
+          <th>Level of Transformation</th>
+          <th>Planned Completion Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for marker in markers %}
+          <tr>
+            <td>{{ marker.description }}</td>
+            <td>{{ marker.partner }}</td>
+            <td>{{ marker.level }}</td>
+            <td>{{ marker.completion_date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+</div>
+{% endblock %}

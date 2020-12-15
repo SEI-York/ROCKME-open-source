@@ -1,0 +1,15 @@
+{% load rocktags %}
+{% load static %}
+{% comment %}
+This sidebar should be used for any of the pages that are not tied
+to a specific project.
+{% endcomment %}
+
+<li class="sidebar-heading">Overview</li>
+<div class="customHr">.</div>
+<li class="sidebar-heading">Help</li>
+<li class="sidebar-item">
+    <a 
+    href="/media/documents/wiki_help.pdf{% if help_page_number %}#page={{ help_page_number }}{% endif %}" 
+    target="_blank">Instructions</a>
+</li>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    input {
+      width: 400px;
+      height: 30px;
+    }
+    th {
+      font-weight: normal;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h2>Login</h2>
+  <br>
+  <form method="post">
+    {% csrf_token %}
+    <table>
+      <tr>
+        <th>Username / email: </th>
+        <td>{{ form.username }}</td>
+      </tr>
+      <tr>
+        <th>Password: </th>
+        <td>{{ form.password }}</td>
+      </tr>
+    </table>
+    <br>
+    <button type="submit">Login</button>
+  </form>
+{% endblock %}

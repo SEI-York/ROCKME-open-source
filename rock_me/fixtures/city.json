@@ -1,0 +1,30 @@
+[
+{
+    "model": "rock_me.city",
+    "pk": 1,
+    "fields": {
+        "name": "City 1"
+    }
+},
+{
+    "model": "rock_me.city",
+    "pk": 2,
+    "fields": {
+        "name": "City 2"
+    }
+},
+{
+    "model": "rock_me.city",
+    "pk": 3,
+    "fields": {
+        "name": "City 3"
+    }
+},
+{
+    "model": "rock_me.city",
+    "pk": 4,
+    "fields": {
+        "name": "City 4"
+    }
+}
+]

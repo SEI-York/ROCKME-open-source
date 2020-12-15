@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{% if allow_edit %}
+My Projects
+{% else %}
+All Projects
+{% endif %}
+{% endblock %}
+
+
+{% block css %}
+{{ block.super }}
+<!-- pager plugin -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css"
+  rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/jquery.tablesorter.pager.min.css"
+  rel="stylesheet">
+<style>
+  .tablesorter-pager .btn-group-sm .btn {
+    font-size: 1.2em;
+    /* make pager arrows more visible */
+  }
+</style>
+{% endblock %}
+
+
+{% block header-js %}
+<script src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.min.js">
+</script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/extras/jquery.tablesorter.pager.min.js">
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row-fluid" id="decart-projects">
+  <br>
+  {% if allow_edit %}
+  <h3>My on-going projects</h3>
+  <i>You have edit access to the following entries:</i>
+  {% else %}
+  <h3>All on-going projects</h3>
+  {% endif %}
+  <hr>
+  <table id="decart-project-table" class="table table-bordered table-hover decart-table">
+    <thead class="thead-dark">
+      <tr>
+        <th style="width: 32%">Title</th>
+        <th style="width: 10%">Type</th>
+        <th style="width: 15%">Lead Administrative Organisation</th>
+        <th style="width: 15%">Lead Scientific Organisation</th>
+        <th style="width: 8%">City</th>
+        <th style="width: 8%" data-date-format="ddmmyyyy">Start date</th>
+        <th style="width: 8%" data-date-format="ddmmyyyy">End date</th>
+        {% if allow_edit %}
+        <th class="option-1" data-sorter="false" data-filter="false">Delete</th>
+        <th class="option-1" data-sorter="false" data-filter="false">Complete</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Lead Administrative Organisation</th>
+        <th>Lead Scientific Organisation</th>
+        <th>City</th>
+        <th>Start date</th>
+        <th>End date</th>
+        {% if allow_edit %}
+        <th>Delete</th>
+        <th>Complete</th>
+        {% endif %}
+      </tr>
+      <tr>
+        <th colspan="{{ allow_edit|yesno:"9,7" }}" class="ts-pager">
+          <div class="form-inline">
+            <div class="btn-group btn-group-sm mx-1" role="group">
+              <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+              <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+            </div>
+            <span class="pagedisplay"></span>
+            <div class="btn-group btn-group-sm mx-1" role="group">
+              <button type="button" class="btn btn-secondary next" title="next">→</button>
+              <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+            </div>
+          </div>
+        </th>
+      </tr>
+    </tfoot>
+    <tbody>
+      {% if ongoing_projects %}
+      {% for project in ongoing_projects %}
+      <tr>
+        {% if allow_edit %}
+        <td><a href="{% url 'editproject' project.id %}">{{ project.title }}</a></td>
+        {% else %}
+        <td><a href="{% url 'viewproject' project.id %}">{{ project.title }}</a></td>
+        {% endif %}
+        <td>{{ project.rock.project_type|title }}</td>
+        <td>{{ project.rock.lead_administrative_organisation|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.rock.lead_scientific_organisation|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.rock.city|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.start_date|date:"d/m/Y" }}</td>
+        <td>{{ project.end_date|date:"d/m/Y" }}</td>
+        {% if allow_edit %}
+        <td class="option-2">
+          <form method="post" class="delete-form">
+            {% csrf_token %}
+            <input type="hidden" name="project-id" value="{{ project.id }}">
+            <input type="hidden" name="action" value="delete">
+            <button class="btn btn-sm btn-danger" title="Delete this project" type="submit">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </form>
+        </td>
+        <td class="option-2">
+          <form method="post" class="complete-form">
+            {% csrf_token %}
+            <input type="hidden" name="project-id" value="{{ project.id }}">
+            <input type="hidden" name="action" value="complete">
+            <button class="btn btn-sm btn-success" title="Mark this project as complete" type="submit">
+              <i class="fas fa-check"></i>
+            </button>
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      {% else %}
+      <td colspan="{{ allow_edit|yesno:"9,7" }}">You don't have any active project yet.</td>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <br>
+  {% if allow_edit %}
+  <h3>My completed projects</h3>
+  {% else %}
+  <h3>All completed projects</h3>
+  {% endif %}
+  <hr />
+  <table id="decart-completed-project-table" class="table table-bordered table-striped decart-table">
+    <thead class="thead-dark">
+      <tr>
+        <th class="click-me" style="width: 32%">Title</th>
+        <th style="width: 8%">Type</th>
+        <th style="width: 15%">Lead Administrative Organisation</th>
+        <th style="width: 15%">Lead Scientific Organisation</th>
+        <th style="width: 8%">City</th>
+        <th style="width: 8%" data-date-format="ddmmyyyy">Start date</th>
+        <th style="width: 8%" data-date-format="ddmmyyyy">End date</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Lead Administrative Organisation</th>
+        <th>Lead Scientific Organisation</th>
+        <th>City</th>
+        <th>Start date</th>
+        <th>End date</th>
+      </tr>
+      <tr>
+        <th colspan="7" class="ts-pager">
+          <div class="form-inline">
+            <div class="btn-group btn-group-sm mx-1" role="group">
+              <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+              <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+            </div>
+            <span class="pagedisplay"></span>
+            <div class="btn-group btn-group-sm mx-1" role="group">
+              <button type="button" class="btn btn-secondary next" title="next">→</button>
+              <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+            </div>
+          </div>
+        </th>
+      </tr>
+    </tfoot>
+    <tbody>
+      {% if completed_projects %}
+      {% for project in completed_projects %}
+      <tr>
+        <td><a href="{% url 'viewproject' project.id %}">{{ project.title }}</a></td>
+        <td>{{ project.rock.project_type|title }}</td>
+        <td>{{ project.rock.lead_administrative_organisation|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.rock.lead_scientific_organisation|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.rock.city|default_if_none:"Not Specified" }}</td>
+        <td>{{ project.start_date|date:"d/m/Y" }}</td>
+        <td>{{ project.end_date|date:"d/m/Y" }}</td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <td colspan="6">You don't have any completed project yet.</td>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{# Because tablesorter required that jquery be loaded in the header, we need to #}
+{# nuke the base.html javascript section. This means we also need to add back   #}
+{# in the sidebar fucntion as well... TODO :: Find a better way of doing this!  #}
+<script>
+  // Table sorting
+  $(document).ready(function () {
+    $("#decart-project-table").tablesorter({
+      theme: "bootstrap",
+      widthFixed: true,
+      widgets: ["filter", "zebra"],
+
+      widgetOptions: {
+        zebra: ["even", "odd"],
+        filter_reset: ".reset",
+      }
+    }).tablesorterPager({
+      //page size
+      size: 10,
+      savePages: false,
+      // target the pager markup - see the HTML block below
+      container: $("#decart-project-table .ts-pager"),
+      // target the pager page select dropdown - choose a page
+      cssGoto: ".pagenum",
+      // remove rows from the table to speed up the sort of large tables.
+      // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+      removeRows: false,
+      // output string - default is '{page}/{totalPages}';
+      // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+      output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+    });
+
+    $("#decart-completed-project-table").tablesorter({
+      theme: "bootstrap",
+      widthFixed: true,
+      widgets: ["filter", "zebra"],
+
+      widgetOptions: {
+        zebra: ["even", "odd"],
+        filter_reset: ".reset",
+      }
+    }).tablesorterPager({
+      //page size
+      size: 10,
+      savePages: false,
+      // target the pager markup - see the HTML block below
+      container: $("#decart-completed-project-table .ts-pager"),
+      // target the pager page select dropdown - choose a page
+      cssGoto: ".pagenum",
+      // remove rows from the table to speed up the sort of large tables.
+      // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+      removeRows: false,
+      // output string - default is '{page}/{totalPages}';
+      // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+      output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+    });
+  });
+
+  // DELETE a project
+  $('.delete-form').submit(function (event) {
+    var result = confirm(
+      "Are you sure you want to mark this project for deletion? You will be unable to view or edit it afterwards."
+    );
+    if (!result) {
+      event.preventDefault();
+    }
+  });
+
+  // DELETE a project
+  $('.complete-form').submit(function (event) {
+    var result = confirm(
+      "Are you sure you want to mark this project as complete? You will be unable to edit it afterwards.");
+    if (!result) {
+      event.preventDefault();
+    }
+  });
+</script>
+{% endblock %}
