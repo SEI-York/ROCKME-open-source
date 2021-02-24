@@ -17,7 +17,7 @@ details.
 
 If you ever need to quote the tool in papers or reports the correct way of reporting is:
 
-Topi, C., Cambridge, H., Wang, G., Anderson-Morris, I., Green D., 2021, ROCKME: A monitoring reporting evaluation and leanring tool for large scale EU demostration projects. Stockholm Environment Institute at the University of York. York. UK. https://github.com/SEI-York/ROCKME-open-source/   
+Topi, C., Cambridge, H., Wang, G., Anderson-Morris, I., Green D., 2021, ROCKME: A monitoring reporting evaluation and learning tool for large scale EU demostration projects. Stockholm Environment Institute at the University of York. York. UK. https://github.com/SEI-York/ROCKME-open-source/   
 
 ## Setting up a Development environment
 Modify the `.env.example` file according to your environment and rename it to `.env`.
