@@ -1,12 +1,8 @@
 # ROCK ME
 
-_An Outcome Mapping tool from SEI-York._
+ROCKME is an innovative MREL tool for the Monitoring, Reporting, Evaluation of the impacts of the outcome of  actions connected with large scale EU demonstration projects and for learning from the experience. It is used by city decision makers, city policy makers, leaders in private enterprises and in not-for-profit organisations to define KPIs and to monitor, report on, evaluate the impact of the outcome of actions from conception stage to implementation and finally to post implementation evaluation on the long term.
 
-![ROCK](rock_me/static/images/logo.png)
-
-_Regeneration and Optimisation of Cultural heritage in creative and Knowledge cities_
-
-This is implementation of DeCart for the EU [ROCK project](https://rockproject.eu/).
+The tool was imagined, conceptualised and designed by Corrado Topi and Howard Cambridge at the Stockholm Environment Institute Research Centre at the University of York. The lead software developer was Guozhong “Douglas” Wang and Innes Anderson-Morrison and David Green were part of the team. The tool is based on Outcome Mapping, and was developed as part of the EC funded large scale demonstrator project ROCK.   
 
 ROCK develops an innovative, collaborative and circular systemic approach for
 regeneration and adaptive reuse of historic city centres. Implementing a
@@ -14,9 +10,14 @@ repertoire of successful heritage-led regeneration initiatives, ROCK test the
 replicability of the spatial approach and of successful models addressing the
 specific needs of historic city centres.  ROCK is a Horizon 2020 funded project. 
 
-
 See the official website [about](https://rockproject.eu/about) page for more
 details.
+
+## How to quote ROCKME
+
+If you ever need to quote the tool in papers or reports the correct way of reporting is:
+
+Topi, C., Cambridge, H., Wang, G., Anderson-Morris, I., Green D., 2021, ROCKME: A monitoring reporting evaluation and leanring tool for large scale EU demostration projects. Stockholm Environment Institute at the University of York. York. UK. https://github.com/SEI-York/ROCKME-open-source/   
 
 ## Setting up a Development environment
 Modify the `.env.example` file according to your environment and rename it to `.env`.
