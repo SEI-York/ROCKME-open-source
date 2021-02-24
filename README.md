@@ -8,6 +8,8 @@ ROCK develops an innovative, collaborative and circular systemic approach for re
 
 See the official website [about](https://rockproject.eu/about) page for more details.
 
+<img src="https://europa.eu/european-union/sites/europaeu/files/docs/body/flag_yellow_high.jpg" alt="EU flag" width="250"/>
+
 ## How to quote ROCKME
 
 If you ever need to quote the tool in papers or reports the correct way of reporting is:
