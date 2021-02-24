@@ -2,7 +2,7 @@
 
 ROCKME is an innovative MREL tool for the Monitoring, Reporting, Evaluation of the impacts of the outcomes of  actions implemented within large scale EU demonstration projects, for the definition and management of their Key Performance Indicators (KPIs) and of the stakeholders, and for learning from the experience of such actions. It is used by city decision makers, city policy makers, leaders in private enterprises and in not-for-profit organisations to define KPIs and to monitor, report on, evaluate the impact of the outcome of actions from conception stage to implementation and finally to post implementation evaluation on the long term.
 
-The tool was imagined, conceptualised and designed by Corrado Topi and Howard Cambridge at the Stockholm Environment Institute Research Centre at the University of York. The lead software developer was Guozhong “Douglas” Wang and Innes Anderson-Morrison and David Gilles were part of the team. The tool is based on Outcome Mapping, and was developed as part of the EC funded large scale demonstrator project ROCK.   
+The tool was imagined, conceptualised and designed by Corrado Topi and Howard Cambridge at the Stockholm Environment Institute Research Centre at the University of York. The lead software developer was Guozhong “Douglas” Wang and Innes Anderson-Morrison was part of the team. The tool is based on Outcome Mapping, and was developed as part of the EC funded large scale demonstrator project ROCK.   
 
 ROCK develops an innovative, collaborative and circular systemic approach for regeneration and adaptive reuse of historic city centres. Implementing a repertoire of successful heritage-led regeneration initiatives, ROCK test the replicability of the spatial approach and of successful models addressing the specific needs of historic city centres. The ROCK project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 730280.
 
@@ -12,7 +12,7 @@ See the official website [about](https://rockproject.eu/about) page for more det
 
 If you ever need to quote the tool in papers or reports the correct way of reporting is:
 
-Topi, C., Cambridge, H., Wang, G., Anderson-Morris, I., Green D., 2021, ROCKME: A monitoring reporting evaluation and learning tool for large scale EU demostration projects. Stockholm Environment Institute at the University of York. York. UK. https://github.com/SEI-York/ROCKME-open-source/   
+Topi, C., Cambridge, H., Wang, G., Anderson-Morris, I. 2021, ROCKME: A monitoring reporting evaluation and learning tool for large scale EU demostration projects. Stockholm Environment Institute at the University of York. York. UK. https://github.com/SEI-York/ROCKME-open-source/   
 
 ## Setting up a Development environment
 Modify the `.env.example` file according to your environment and rename it to `.env`.
