@@ -8,6 +8,9 @@ ROCK developed an innovative, collaborative and circular systemic approach for r
 
 See the official website [about](https://rockproject.eu/about) page for more details.
 
+![normal-reproduction-high-resolution](https://user-images.githubusercontent.com/17342799/143472620-970219fc-87b4-45a5-b524-460f95aa0f32.jpg)
+
+
 ## How to quote ROCKME
 
 If you ever need to quote the tool in papers or reports the correct way of reporting is:
